@@ -1,0 +1,33 @@
+keycloak:
+  serverUrl: http://localhost:8081
+  realm: secure-client-realm
+  adminClientId: admin-cli
+  adminClientSecret: OqLClRwwwMtROz8VQftySuDVk7sj2mW1
+  clientId: auth-service
+
+spring:
+  application:
+    name: authService
+  #  keycloak:
+  #    auth-server-url: ${keycloak.server-url}
+  #    realm: {keycloak.realm}
+  #    resource: ${keycloak.client-id}
+  #    public-client: true
+  security:
+    oauth2:
+      #      client:
+      #        registration:
+      #          auth-service:
+      #            client-id: ${keycloak.client-id}
+      #            client-secret: ${keycloak.adminClientId}
+      #            authorization-grant-type: authorization_code
+      #            scope: openid,profile,email,phone,address
+      #        provider:
+      #          auth-service:
+      #            issuer-uri: ${keycloak.server-url}/realms/${keycloak.realm}
+      #            user-name-attribute: preferred_username
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.server-url}/realms/${keycloak.realm}
+server:
+  port: 8080
