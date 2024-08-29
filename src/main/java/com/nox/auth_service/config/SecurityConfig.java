@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Slf4j
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity()
 @SuppressWarnings("unused")
 public class SecurityConfig {
     private static final String REALM_ACCESS = "realm_access";
@@ -57,7 +57,7 @@ public class SecurityConfig {
                     //noinspection unchecked
                     List<String> realmRoles = new ArrayList<>((Collection<String>) rolesList);
                     return realmRoles.stream()
-                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                             .collect(Collectors.toList());
                 } else {
                     return new ArrayList<>();

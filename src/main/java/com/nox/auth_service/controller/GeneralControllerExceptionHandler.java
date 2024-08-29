@@ -5,7 +5,9 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.util.JsonSerialization;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,12 +33,24 @@ public class GeneralControllerExceptionHandler {
         return ResponseEntity.status(response.getStatus()).body(errorResponse);
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        log.error("An error occurred: ", e);
+        ErrorResponseDto errorResponse = new ErrorResponseDto();
+        errorResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        errorResponse.setReason("Access Denied");
+        errorResponse.setErrorDetails(Map.of("message", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> handleException(Exception e) {
         log.error("An error occurred: ", e);
         ErrorResponseDto errorResponse = new ErrorResponseDto();
-        errorResponse.setStatus(500);
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorResponse.setReason("Internal Server Error");
-        return ResponseEntity.status(500).body(errorResponse);
+        errorResponse.setErrorDetails(Map.of("message", e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(errorResponse);
     }
 }
