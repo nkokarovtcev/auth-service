@@ -9,7 +9,7 @@ services:
       PGDATA: /data/postgres
     volumes:
       - keycloak_postgres:/data/postgres
-      - ./src/main/resources/sql-scripts/keycloak-schema-create.sql:/docker-entrypoint-initdb.d/keycloak-schema-create.sql
+      - ./src/main/resources/sql-scripts/keyCloakDBDump.sql:/docker-entrypoint-initdb.d/keyCloakDBDump.sql
     ports:
       - 5434:5432
     networks:
