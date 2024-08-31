@@ -38,6 +38,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
                                 "/swagger-resources/**", "/swagger-ui.html").permitAll()
+                        // прометей не умеет из коробки в oidc/ouath2 авторизацию, и в реальных системах обычно
+                        //  спрятан за nginx (или другим прокси), для упрощения оставим его открытым
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))

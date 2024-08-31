@@ -52,6 +52,29 @@ services:
     depends_on:
       - postgres
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - secureClientNetwork
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - secureClientNetwork
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./src/main/resources/grafana/grafana.db:/var/lib/grafana/grafana.db
+
   auth-service:
     build: .
     ports:

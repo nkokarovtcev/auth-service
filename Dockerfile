@@ -1,7 +1,7 @@
 FROM openjdk:21 AS build
 WORKDIR /app
 COPY . .
-RUN chmod +x mvnw && ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package
 
 FROM openjdk:21
 COPY --from=build /app/target/auth-service*.jar /usr/local/lib/auth-service.jar
