@@ -1,15 +1,14 @@
 package com.nox.auth_service.controller;
+
 import com.nox.auth_service.dto.PasswordChangeRequestDto;
 import com.nox.auth_service.dto.SuccessfulResponseDto;
 import com.nox.auth_service.dto.UserDto;
-import com.nox.auth_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/users")
-@RequiredArgsConstructor
-@SuppressWarnings("unused")
-public class UserController {
-    public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
-    private final UserService userService;
+public interface UserController {
+    static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
+    static final String MESSAGE_USER_UPDATED = "Пользователь успешно удален";
+    static final String MESSAGE_PASSWORD_CHANGED = "Пароль успешно изменен";
 
     @Operation(summary = "Получить всех пользователей",
             description = "Получает список всех пользователей. Требуется роль администратора.")
@@ -34,9 +30,7 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @GetMapping
-    public List<UserDto> getUsers() {
-        return userService.getUsers();
-    }
+    List<UserDto> getUsers();
 
     @Operation(summary = "Получить пользователя по ID",
             description = "Получает пользователя по его ID. Требуется роль администратора.")
@@ -48,11 +42,9 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @GetMapping("/{userId}")
-    public UserDto getUser(
+    UserDto getUser(
             @Parameter(description = "ID пользователя, которого нужно получить", required = true)
-            @PathVariable String userId) {
-        return userService.getUser(userId);
-    }
+            @PathVariable String userId);
 
     @Operation(summary = "Создать нового пользователя",
             description = "Создает нового пользователя с предоставленными данными. Требуется роль администратора.")
@@ -64,11 +56,9 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    public UserDto createUser(
+    UserDto createUser(
             @Parameter(description = "Данные нового пользователя", required = true)
-            @RequestBody UserDto userDto) {
-        return userService.createUser(userDto);
-    }
+            @RequestBody UserDto userDto);
 
     @Operation(summary = "Обновить пользователя по ID",
             description = "Обновляет данные пользователя по его ID. Требуется роль администратора.")
@@ -81,13 +71,11 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping("/{userId}")
-    public UserDto updateUser(
+    UserDto updateUser(
             @Parameter(description = "ID пользователя, которого нужно обновить", required = true)
             @PathVariable String userId,
             @Parameter(description = "Обновленные данные пользователя", required = true)
-            @RequestBody UserDto userUpdateRequestDto) {
-        return userService.updateUser(userId, userUpdateRequestDto);
-    }
+            @RequestBody UserDto userUpdateRequestDto);
 
     @Operation(summary = "Удалить пользователя по ID",
             description = "Удаляет пользователя по его ID. Требуется роль администратора.")
@@ -99,12 +87,9 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{userId}")
-    public ResponseEntity<SuccessfulResponseDto> deleteUser(
+    ResponseEntity<SuccessfulResponseDto> deleteUser(
             @Parameter(description = "ID пользователя, которого нужно удалить", required = true)
-            @PathVariable String userId) {
-        userService.deleteUser(userId);
-        return ResponseEntity.ok(new SuccessfulResponseDto("Пользователь успешно удален"));
-    }
+            @PathVariable String userId);
 
     @Operation(summary = "Изменить пароль пользователя по ID",
             description = "Изменяет пароль пользователя по его ID. Требуется роль администратора.")
@@ -117,14 +102,11 @@ public class UserController {
     })
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping("/{userId}/password")
-    public ResponseEntity<SuccessfulResponseDto> changePassword(
+    ResponseEntity<SuccessfulResponseDto> changePassword(
             @Parameter(description = "ID пользователя, пароль которого нужно изменить", required = true)
             @PathVariable String userId,
             @Parameter(description = "Новый пароль", required = true)
-            @RequestBody PasswordChangeRequestDto passwordChangeRequestDto) {
-        userService.changePassword(userId, passwordChangeRequestDto);
-        return ResponseEntity.ok(new SuccessfulResponseDto("Пароль успешно изменен"));
-    }
+            @RequestBody PasswordChangeRequestDto passwordChangeRequestDto);
 
     @Operation(summary = "Изменить собственный пароль",
             description = "Изменяет пароль текущего авторизованного пользователя.")
@@ -134,11 +116,8 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     @PostMapping("/password")
-    public ResponseEntity<SuccessfulResponseDto> changeOwnPassword(
+    ResponseEntity<SuccessfulResponseDto> changeOwnPassword(
             @Parameter(description = "Новый пароль", required = true)
             @RequestBody PasswordChangeRequestDto passwordChangeRequestDto,
-            Principal principal) {
-        userService.changeOwnPassword(passwordChangeRequestDto, principal);
-        return ResponseEntity.ok(new SuccessfulResponseDto("Пароль успешно изменен"));
-    }
+            Principal principal);
 }

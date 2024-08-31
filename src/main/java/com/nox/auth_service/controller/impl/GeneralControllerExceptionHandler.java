@@ -1,4 +1,4 @@
-package com.nox.auth_service.controller;
+package com.nox.auth_service.controller.impl;
 
 import com.nox.auth_service.dto.ErrorResponseDto;
 import jakarta.ws.rs.ClientErrorException;
