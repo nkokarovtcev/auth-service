@@ -17,9 +17,9 @@ import java.security.Principal;
 import java.util.List;
 
 public interface UserController {
-    static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
-    static final String MESSAGE_USER_UPDATED = "Пользователь успешно удален";
-    static final String MESSAGE_PASSWORD_CHANGED = "Пароль успешно изменен";
+    String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
+    String MESSAGE_USER_UPDATED = "Пользователь успешно удален";
+    String MESSAGE_PASSWORD_CHANGED = "Пароль успешно изменен";
 
     @Operation(summary = "Получить всех пользователей",
             description = "Получает список всех пользователей. Требуется роль администратора.")
